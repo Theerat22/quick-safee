@@ -17,5 +17,42 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Sukhumvit, sans-serif;
+}
+
+@font-face {
+  font-family: 'Sukhumvit';
+  src: url('../public/fonts/SukhumvitSet-Medium.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+} 
+@font-face {
+  font-family: 'Sukhumvit';
+  src: url('../public/fonts/SukhumvitSet-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: bold;
+} 
+@font-face {
+  font-family: 'Sukhumvit';
+  src: url('../public/fonts/SukhumvitSet-Light.ttf') format('truetype');
+  font-weight: light;
+  font-style: light;
+} 
+@font-face {
+  font-family: 'Sukhumvit';
+  src: url('../public/fonts/SukhumvitSet-Medium.ttf') format('truetype');
+  font-weight: medium;
+  font-style: medium;
+} 
+@font-face {
+  font-family: 'Sukhumvit';
+  src: url('../public/fonts/SukhumvitSet-Thin.ttf') format('truetype');
+  font-weight: thin;
+  font-style: thin;
+}
+@font-face {
+  font-family: 'Sukhumvit';
+  src: url('../public/fonts/SukhumvitSet-Text.ttf') format('truetype');
+  font-weight: text;
+  font-style: text;
 }

@@ -1,101 +1,176 @@
-import Image from "next/image";
+'use client'; // This marks the file as a client component
 
-export default function Home() {
+import { useRef, useState } from 'react';
+import { FaTimes } from 'react-icons/fa';
+import { useJsApiLoader, GoogleMap, Marker, Autocomplete, DirectionsRenderer } from '@react-google-maps/api';
+
+const center = { lat: 13.73113567541045, lng: 100.78116724040248 }; // Eiffel Tower coordinates
+
+const Home = () => {
+  // const [isOpen, setIsOpen] = useState(false);
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+    libraries: ['places'],
+  });
+
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
+  const [distance, setDistance] = useState('');
+  const [duration, setDuration] = useState('');
+
+  const originRef = useRef<HTMLInputElement>(null);
+  const destinationRef = useRef<HTMLInputElement>(null);
+
+  if (loadError) {
+    return <div>Error loading Google Maps</div>;
+  }
+
+  if (!isLoaded) {
+    return <div className="animate-pulse h-full bg-gray-200"></div>;
+  }
+
+  const calculateRoute = async () => {
+    if (!originRef.current?.value || !destinationRef.current?.value) {
+      alert('กรุณากรอกที่เกิดเหตุ');
+      return;
+    }
+  
+    const directionsService = new google.maps.DirectionsService();
+    try {
+      const results = await directionsService.route({
+        origin: originRef.current.value,
+        destination: destinationRef.current.value,
+        travelMode: google.maps.TravelMode.DRIVING,
+      });
+  
+      if (
+        results.routes &&
+        results.routes.length > 0 &&
+        results.routes[0].legs &&
+        results.routes[0].legs.length > 0
+      ) {
+        const leg = results.routes[0].legs[0];
+  
+        setDirectionsResponse(results);
+        setDistance(leg.distance ? leg.distance.text : 'Distance not available');
+        setDuration(leg.duration ? leg.duration.text : 'Duration not available');
+      } else {
+        console.error('No route found');
+        setDistance('No route found');
+        setDuration('No route found');
+      }
+    } catch (error) {
+      console.error('Error calculating route:', error);
+      setDistance('Error calculating route');
+      setDuration('Error calculating route');
+    }
+  };
+  
+  
+
+  const clearRoute = () => {
+    setDirectionsResponse(null);
+    setDistance('');
+    setDuration('');
+    if (originRef.current) originRef.current.value = '';
+    if (destinationRef.current) destinationRef.current.value = '';
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="relative flex flex-col items-center h-screen w-screen">
+      {/* Google Map */}
+      <div className="absolute left-0 top-0 h-full w-full">
+        <GoogleMap
+          center={center}
+          zoom={15}
+          mapContainerStyle={{ width: '100%', height: '100%' }}
+          options={{
+            zoomControl: true,
+            streetViewControl: false,
+            mapTypeControl: false,
+            fullscreenControl: false,
+          }}
+          onLoad={(map) => setMap(map)}
+        >
+          <Marker position={center} />
+          {directionsResponse && <DirectionsRenderer directions={directionsResponse} />}
+        </GoogleMap>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Controls */}
+      <div className="absolute z-10 p-6 bg-white rounded-lg shadow-lg w-full max-w-4xl mx-4 sm:mx-2 lg:max-w-2xl xl:max-w-4xl">
+        <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+          {/* Origin Input */}
+          
+          <div className="flex-grow text-black">
+            <Autocomplete>
+              <input
+                ref={originRef}
+                type="text"
+                placeholder="ต้นทาง"
+                className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              />
+            </Autocomplete>
+          </div>
+          
+          {/* Destination Input */}
+          <div className="flex-grow text-black">
+            <Autocomplete>
+              <input
+                ref={destinationRef}
+                type="text"
+                placeholder="ที่เกิดเหตุ"
+                className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              />
+            </Autocomplete>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex sm:space-x-2 space-x-0 sm:flex-row flex-col text-black">
+            <button
+              onClick={calculateRoute}
+              className="bg-pink-500 text-white py-3 px-6 rounded-md hover:bg-pink-600 focus:outline-none transition-all duration-200 ease-in-out w-full sm:w-auto"
+            >
+              คำนวณระยะทาง
+            </button>
+            <button
+              onClick={clearRoute}
+              className="bg-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-400 focus:outline-none transition-all duration-200 ease-in-out mt-2 sm:mt-0 sm:w-auto w-full"
+            >
+              <FaTimes />
+            </button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mt-6 justify-center items-center">
+            {/* Distance Display */}
+            <div className="text-lg text-gray-800">
+              ระยะทาง: {distance}
+            </div>
+            {/* Duration Display */}
+            <div className="text-lg text-gray-800">
+              เวลาที่ใช้: {duration}
+            </div>
+            {/* Location Button */}
+            <button
+              className="text-blue-600 font-bold underline"
+              onClick={() => {
+                if (destinationRef.current?.value) {
+                map?.panTo(center);
+                map?.setZoom(15);
+                } else{
+                  alert('กรุณากรอกที่เกิดเหตุ');
+                }
+              }}
+            >
+              ที่เกิดเหตุ
+            </button>
+          </div>
+          </div>
+
+
     </div>
   );
-}
+};
+
+export default Home;
