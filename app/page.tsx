@@ -6,11 +6,15 @@ import { useJsApiLoader, GoogleMap, Marker, Autocomplete, DirectionsRenderer } f
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import accident from '../public/accident.jpg';
+import { Disclosure } from '@headlessui/react'
 
-const center = { lat: 13.73113567541045, lng: 100.78116724040248 }; // Eiffel Tower coordinates
+const center = { lat: 13.73113567541045, lng: 100.78116724040248 };
 
 const Home = () => {
-  console.log(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY); // Check if it prints the API key
+  // console.log(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY); // Check if it prints the API key
+  const [isControlsVisible, setIsControlsVisible] = useState(false);
+  const toggleControls = () => setIsControlsVisible(!isControlsVisible);
+
   const [isVisible, setIsVisible] = useState(false);
   const handleClick = () => setIsVisible(!isVisible);
 
@@ -106,80 +110,79 @@ const Home = () => {
 
       {/* Controls */}
       <div className="absolute z-20 p-6 bg-white rounded-lg shadow-lg w-full max-w-4xl mx-4 sm:mx-2 lg:max-w-2xl xl:max-w-4xl">
-        <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-          {/* Origin Input */}
-          
-          <div className="flex-grow text-black">
-            <Autocomplete>
-              <input
-                ref={originRef}
-                type="text"
-                placeholder="ต้นทาง"
-                className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-              />
-            </Autocomplete>
-          </div>
-          
-          {/* Destination Input */}
-          <div className="flex-grow text-black">
-            <Autocomplete>
-              <input
-                ref={destinationRef}
-                type="text"
-                placeholder="ที่เกิดเหตุ"
-                className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-              />
-            </Autocomplete>
-          </div>
+      <Disclosure>
+        {({ open }) => (
+          <div>
+            {/* Disclosure Button for mobile */}
+            <Disclosure.Button className="sm:hidden bg-gray-300 text-gray-700 py-2 px-4 rounded-md w-full text-center">
+              {open ? 'ปิด' : 'เปิด'} ฟอร์ม
+            </Disclosure.Button>
 
-          {/* Action Buttons */}
-          <div className="flex sm:space-x-2 space-x-0 sm:flex-row flex-col text-black">
-            <button
-              onClick={calculateRoute}
-              className="bg-pink-500 text-white py-3 px-6 rounded-md hover:bg-pink-600 focus:outline-none transition-all duration-200 ease-in-out w-full sm:w-auto"
-            >
-              คำนวณระยะทาง
-            </button>
-            <button
-              onClick={clearRoute}
-              className="bg-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-400 focus:outline-none transition-all duration-200 ease-in-out mt-2 sm:mt-0 sm:w-auto w-full"
-            >
-              <FaTimes />
-            </button>
+            {/* Content that will be toggled on mobile */}
+            <Disclosure.Panel className="sm:flex sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 flex-col">
+              {/* Origin Input */}
+              <div className="flex-grow text-black">
+                <Autocomplete>
+                  <input
+                    ref={originRef}
+                    type="text"
+                    placeholder="ต้นทาง"
+                    className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  />
+                </Autocomplete>
+              </div>
+              
+              {/* Destination Input */}
+              <div className="flex-grow text-black">
+                <Autocomplete>
+                  <input
+                    ref={destinationRef}
+                    type="text"
+                    placeholder="ที่เกิดเหตุ"
+                    className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  />
+                </Autocomplete>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex sm:space-x-2 space-x-0 sm:flex-row flex-col text-black">
+                <button
+                  onClick={calculateRoute}
+                  className="bg-pink-500 text-white py-3 px-6 rounded-md hover:bg-pink-600 focus:outline-none transition-all duration-200 ease-in-out w-full sm:w-auto"
+                >
+                  คำนวณระยะทาง
+                </button>
+                <button
+                  onClick={clearRoute}
+                  className="bg-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-400 focus:outline-none transition-all duration-200 ease-in-out mt-2 sm:mt-0 sm:w-auto w-full"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+            </Disclosure.Panel>
           </div>
+        )}
+      </Disclosure>
+
+      {/* Distance and Duration display */}
+      <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mt-6 justify-center items-center">
+        {/* Distance Display */}
+        <div className="text-lg text-gray-800">
+          ระยะทาง: {distance}
+        </div>
+        {/* Duration Display */}
+        <div className="text-lg text-gray-800">
+          เวลาที่ใช้: {duration}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mt-6 justify-center items-center">
-            {/* Distance Display */}
-            <div className="text-lg text-gray-800">
-              ระยะทาง: {distance}
-            </div>
-            {/* Duration Display */}
-            <div className="text-lg text-gray-800">
-              เวลาที่ใช้: {duration}
-            </div>
-            {/* Location Button */}
-            <button
-              className="text-blue-600 font-bold underline"
-              onClick={() => {
-                if (destinationRef.current?.value) {
-                map?.panTo(center);
-                map?.setZoom(15);
-                } else{
-                  alert('กรุณากรอกที่เกิดเหตุ');
-                }
-              }}
-            >
-              ที่เกิดเหตุ
-            </button>
-            <button
-              className="px-4 py-2 bg-red-500 text-white font-bold rounded-md"
-              onClick={handleClick}
-            >
-              ทดสอบ alert
-            </button>
-          </div>
-          </div>
+        <button
+          className="text-red-500 font-bold underline"
+          onClick={handleClick}
+        >
+          ทดสอบ alert
+        </button>
+      </div>
+    </div>
 
           {isVisible && (
         <motion.div
