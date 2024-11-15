@@ -12,8 +12,8 @@ const center = { lat: 13.73113567541045, lng: 100.78116724040248 };
 
 const Home = () => {
   // console.log(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY); // Check if it prints the API key
-  const [isControlsVisible, setIsControlsVisible] = useState(false);
-  const toggleControls = () => setIsControlsVisible(!isControlsVisible);
+  // const [isControlsVisible, setIsControlsVisible] = useState(false);
+  // const toggleControls = () => setIsControlsVisible(!isControlsVisible);
 
   const [isVisible, setIsVisible] = useState(false);
   const handleClick = () => setIsVisible(!isVisible);
@@ -28,7 +28,7 @@ const Home = () => {
   const [directionsResponse, setDirectionsResponse] = useState<google.maps.DirectionsResult | null>(null);
   const [distance, setDistance] = useState('');
   const [duration, setDuration] = useState('');
-
+  console.log(map);
   const originRef = useRef<HTMLInputElement>(null);
   const destinationRef = useRef<HTMLInputElement>(null);
 
