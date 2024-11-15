@@ -3,13 +3,19 @@
 import { useRef, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { useJsApiLoader, GoogleMap, Marker, Autocomplete, DirectionsRenderer } from '@react-google-maps/api';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import accident from '../public/accident.jpg';
 
 const center = { lat: 13.73113567541045, lng: 100.78116724040248 }; // Eiffel Tower coordinates
 
 const Home = () => {
-  // const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const handleClick = () => setIsVisible(!isVisible);
+
+  // const [isOpen, setIsOpen] = useState(false);NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
   const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
     libraries: ['places'],
   });
 
@@ -98,7 +104,7 @@ const Home = () => {
       </div>
 
       {/* Controls */}
-      <div className="absolute z-10 p-6 bg-white rounded-lg shadow-lg w-full max-w-4xl mx-4 sm:mx-2 lg:max-w-2xl xl:max-w-4xl">
+      <div className="absolute z-20 p-6 bg-white rounded-lg shadow-lg w-full max-w-4xl mx-4 sm:mx-2 lg:max-w-2xl xl:max-w-4xl">
         <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
           {/* Origin Input */}
           
@@ -165,8 +171,46 @@ const Home = () => {
             >
               ที่เกิดเหตุ
             </button>
+            <button
+              className="px-4 py-2 bg-red-500 text-white font-bold rounded-md"
+              onClick={handleClick}
+            >
+              ทดสอบ alert
+            </button>
           </div>
           </div>
+
+          {isVisible && (
+        <motion.div
+          className="z-50 fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="bg-white p-6 rounded-lg shadow-lg w-100"
+            initial={{ scale: 0.5 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.5 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h2 className="text-5xl font-semibold text-center text-red-500">‼️ เกิดอุบัติเหตุ ‼️</h2>
+            <Image src={accident} alt="Warning Icon" className='mx-auto w-80 mt-4 rounded rounded-xl' />
+              <div className="mt-6">
+                <p className="text-center text-black"><span className='font-bold'>ประเภทอุบัติเหตุ :</span> อุบัติเหตุหนัก</p>
+                <p className="text-center mt-2 text-black"><span className='font-bold'>สถานที่เกิดเหตุ :</span> แยกสวนสยาม ถนนเสรีไทย เขตคันนายาว</p>
+                <p className="text-center mt-2 text-black font-bold">เวลา : <span className='underline'>17:13 P.M.</span> </p>
+              </div>
+            <button
+              className="mt-6 px-4 py-2 bg-red-500 text-white font-bold rounded-md block mx-auto"
+              onClick={handleClick}
+            >
+              ปิด
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
+
 
 
     </div>
