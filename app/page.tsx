@@ -10,6 +10,7 @@ import accident from '../public/accident.jpg';
 const center = { lat: 13.73113567541045, lng: 100.78116724040248 }; // Eiffel Tower coordinates
 
 const Home = () => {
+  console.log(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY); // Check if it prints the API key
   const [isVisible, setIsVisible] = useState(false);
   const handleClick = () => setIsVisible(!isVisible);
 
