@@ -9,7 +9,7 @@ const center = { lat: 13.73113567541045, lng: 100.78116724040248 }; // Eiffel To
 const Home = () => {
   // const [isOpen, setIsOpen] = useState(false);
   const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
     libraries: ['places'],
   });
 
