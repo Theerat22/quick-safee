@@ -110,79 +110,124 @@ const Home = () => {
 
       {/* Controls */}
       <div className="absolute z-20 p-6 bg-white rounded-lg shadow-lg w-full max-w-4xl mx-4 sm:mx-2 lg:max-w-2xl xl:max-w-4xl">
-      <Disclosure>
-        {({ open }) => (
-          <div>
-            {/* Disclosure Button for mobile */}
-            <Disclosure.Button className="sm:hidden bg-gray-300 text-gray-700 py-2 px-4 rounded-md w-full text-center">
-              {open ? 'ปิด' : 'เปิด'} ฟอร์ม
-            </Disclosure.Button>
+  {/* Mobile view: Disclosure component */}
+  <div className="sm:hidden">
+    <Disclosure>
+      {({ open }) => (
+        <div>
+          {/* Disclosure Button for mobile */}
+          <Disclosure.Button className="bg-gray-300 text-gray-700 py-2 px-4 rounded-md w-full text-center">
+            {open ? 'ปิด' : 'เปิด'} ฟอร์ม
+          </Disclosure.Button>
 
-            {/* Content that will be toggled on mobile */}
-            <Disclosure.Panel className="sm:flex sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 flex-col">
-              {/* Origin Input */}
-              <div className="flex-grow text-black">
-                <Autocomplete>
-                  <input
-                    ref={originRef}
-                    type="text"
-                    placeholder="ต้นทาง"
-                    className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  />
-                </Autocomplete>
-              </div>
-              
-              {/* Destination Input */}
-              <div className="flex-grow text-black">
-                <Autocomplete>
-                  <input
-                    ref={destinationRef}
-                    type="text"
-                    placeholder="ที่เกิดเหตุ"
-                    className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  />
-                </Autocomplete>
-              </div>
+          {/* Content that will be toggled on mobile */}
+          <Disclosure.Panel className="sm:flex sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 flex-col">
+            {/* Origin Input */}
+            <div className="flex-grow text-black">
+              <Autocomplete>
+                <input
+                  ref={originRef}
+                  type="text"
+                  placeholder="ต้นทาง"
+                  className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                />
+              </Autocomplete>
+            </div>
+            
+            {/* Destination Input */}
+            <div className="flex-grow text-black">
+              <Autocomplete>
+                <input
+                  ref={destinationRef}
+                  type="text"
+                  placeholder="ที่เกิดเหตุ"
+                  className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                />
+              </Autocomplete>
+            </div>
 
-              {/* Action Buttons */}
-              <div className="flex sm:space-x-2 space-x-0 sm:flex-row flex-col text-black">
-                <button
-                  onClick={calculateRoute}
-                  className="bg-pink-500 text-white py-3 px-6 rounded-md hover:bg-pink-600 focus:outline-none transition-all duration-200 ease-in-out w-full sm:w-auto"
-                >
-                  คำนวณระยะทาง
-                </button>
-                <button
-                  onClick={clearRoute}
-                  className="bg-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-400 focus:outline-none transition-all duration-200 ease-in-out mt-2 sm:mt-0 sm:w-auto w-full"
-                >
-                  <FaTimes />
-                </button>
-              </div>
-            </Disclosure.Panel>
-          </div>
-        )}
-      </Disclosure>
-
-      {/* Distance and Duration display */}
-      <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mt-6 justify-center items-center">
-        {/* Distance Display */}
-        <div className="text-lg text-gray-800">
-          ระยะทาง: {distance}
+            {/* Action Buttons */}
+            <div className="flex sm:space-x-2 space-x-0 sm:flex-row flex-col text-black">
+              <button
+                onClick={calculateRoute}
+                className="bg-pink-500 text-white py-3 px-6 rounded-md hover:bg-pink-600 focus:outline-none transition-all duration-200 ease-in-out w-full sm:w-auto"
+              >
+                คำนวณระยะทาง
+              </button>
+              <button
+                onClick={clearRoute}
+                className="bg-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-400 focus:outline-none transition-all duration-200 ease-in-out mt-2 sm:mt-0 sm:w-auto w-full"
+              >
+                <FaTimes />
+              </button>
+            </div>
+          </Disclosure.Panel>
         </div>
-        {/* Duration Display */}
-        <div className="text-lg text-gray-800">
-          เวลาที่ใช้: {duration}
-        </div>
+      )}
+    </Disclosure>
+  </div>
 
-        <button
-          className="text-red-500 font-bold underline"
-          onClick={handleClick}
-        >
-          ทดสอบ alert
-        </button>
-      </div>
+  {/* Desktop view: Static form */}
+  <div className="sm:flex sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 hidden sm:block">
+    <div className="flex-grow text-black">
+      <Autocomplete>
+        <input
+          ref={originRef}
+          type="text"
+          placeholder="ต้นทาง"
+          className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+        />
+      </Autocomplete>
     </div>
+    
+    <div className="flex-grow text-black">
+      <Autocomplete>
+        <input
+          ref={destinationRef}
+          type="text"
+          placeholder="ที่เกิดเหตุ"
+          className="w-full p-3 border rounded-md shadow-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+        />
+      </Autocomplete>
+    </div>
+
+    {/* Action Buttons */}
+    <div className="flex sm:space-x-2 space-x-0 sm:flex-row flex-col text-black">
+      <button
+        onClick={calculateRoute}
+        className="bg-pink-500 text-white py-3 px-6 rounded-md hover:bg-pink-600 focus:outline-none transition-all duration-200 ease-in-out w-full sm:w-auto"
+      >
+        คำนวณระยะทาง
+      </button>
+      <button
+        onClick={clearRoute}
+        className="bg-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-400 focus:outline-none transition-all duration-200 ease-in-out mt-2 sm:mt-0 sm:w-auto w-full"
+      >
+        <FaTimes />
+      </button>
+    </div>
+  </div>
+
+  {/* Distance and Duration display */}
+  <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mt-6 justify-center items-center">
+    {/* Distance Display */}
+    <div className="text-lg text-gray-800">
+      ระยะทาง: {distance}
+    </div>
+    {/* Duration Display */}
+    <div className="text-lg text-gray-800">
+      เวลาที่ใช้: {duration}
+    </div>
+
+    <button
+      className="text-red-500 font-bold underline"
+      onClick={handleClick}
+    >
+      ทดสอบ alert
+    </button>
+  </div>
+</div>
+
 
           {isVisible && (
         <motion.div
