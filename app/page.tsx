@@ -304,6 +304,7 @@ const Home = () => {
 
               <div className="mt-6">
                 <p className="text-center text-black"><span className='font-bold'>ประเภทอุบัติเหตุ :</span> อุบัติเหตุหนัก</p>
+                <p className="text-center mt-2 text-black"><span className='font-bold'>เหตุไฟไหม้ :</span> ❌</p>
                 <p className="text-center mt-2 text-black"><span className='font-bold'>สถานที่เกิดเหตุ :</span> แยกสวนสยาม ถนนเสรีไทย เขตคันนายาว</p>
                 <p className="text-center mt-2 text-black font-bold">เวลา : <span className='underline'>17:13 P.M.</span> </p>
               </div>
