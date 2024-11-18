@@ -1,6 +1,6 @@
 'use client'; // This marks the file as a client component
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { useJsApiLoader, GoogleMap, Marker, Autocomplete, DirectionsRenderer } from '@react-google-maps/api';
 import { motion } from 'framer-motion';
@@ -9,6 +9,19 @@ import InfoTable from './components/InfoTable';
 
 const center = { lat: 13.73113567541045, lng: 100.78116724040248 };
 
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * The main component of the app.
+ *
+ * This component renders the Google Map, form controls, and action buttons.
+ *
+ * It also handles the calculation of the route and displays the distance
+ * and duration of the route.
+ *
+ * @returns {JSX.Element}
+ *   The JSX element representing the main component.
+ */
+/******  c8458c05-9c9a-44f0-9a0b-ab72b636831d  *******/
 const Home = () => {
 
   const [isVisible, setIsVisible] = useState(false);
